@@ -13,6 +13,10 @@ import static javax.persistence.FetchType.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})
+@NamedQuery(
+        name="Member.findByUsername",
+        query="SELECT m FROM Member m where m.username = :username"
+)
 public class Member {
 
     @Id @GeneratedValue
