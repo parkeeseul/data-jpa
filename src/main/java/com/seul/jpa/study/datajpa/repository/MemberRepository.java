@@ -1,5 +1,6 @@
 package com.seul.jpa.study.datajpa.repository;
 
+import com.seul.jpa.study.datajpa.dto.MemberDto;
 import com.seul.jpa.study.datajpa.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.username = :username and m.age = :age") // 이름 없는 네임드 쿼리라고 볼 수 있다.
     List<Member> findUser(@Param("username") String username, @Param("age") int age);
+
+    @Query("select m.username from Member m")
+    List<String> findUsernameList();
+
+    @Query("SELECT new com.seul.jpa.study.datajpa.dto.MemberDto(m.id, m.username, t.name) FROM Member m JOIN m.team t")
+    List<MemberDto> findMemberDto();
 }
