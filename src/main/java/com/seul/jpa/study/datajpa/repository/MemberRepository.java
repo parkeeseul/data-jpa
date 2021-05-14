@@ -2,6 +2,9 @@ package com.seul.jpa.study.datajpa.repository;
 
 import com.seul.jpa.study.datajpa.dto.MemberDto;
 import com.seul.jpa.study.datajpa.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +35,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findListByUsername(String username);
     Member findMemberByUsername(String username);
     Optional<Member> findOptionalByUsername(String username);
+
+    @Query(value = "SELECT m FROM Member m LEFT JOIN m.team t",
+            countQuery = "SELECT COUNT(m.username) FROM Member m") // count query 까지 join 이 들어갈 필요가 없을때는 count query 분리가 가능하다.
+    Page<Member> findByAge(int age, Pageable pageable);
+
+//    Slice<Member> findByAge(int age, Pageable pageable); // count 쿼리 없이 다음 페이지만 확인 가능(내부적으로 limit + 1 조회)
 }
