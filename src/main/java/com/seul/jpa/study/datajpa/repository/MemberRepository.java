@@ -5,6 +5,7 @@ import com.seul.jpa.study.datajpa.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -46,4 +47,19 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true) // 쿼리 후 영속성 컨텍스트를 자동으로 clear 해준다.
     @Query("UPDATE Member m set m.age = m.age + 1 WHERE m.age >= :age")
     int bulkAgePlus(@Param("age") int age);
+
+    @Query("SELECT m FROM Member m JOIN FETCH m.team")
+    List<Member> findMemberFetchJoin();
+
+    @Override
+    @EntityGraph(attributePaths = {"team"}) // JPQL 없이도 fetch join 을 가능하게 해줌
+    List<Member> findAll();
+
+    @EntityGraph(attributePaths = {"team"})
+    @Query("SELECT m FROM Member m")
+    List<Member> findMemberEntityGraph();
+
+//    @EntityGraph(attributePaths = {"team"})
+    @EntityGraph("Member.all")
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
 }
