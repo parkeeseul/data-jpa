@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -12,13 +12,14 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})
 @NamedQuery(
-        name="Member.findByUsername",
-        query="SELECT m FROM Member m where m.username = :username"
+        name = "Member.findByUsername",
+        query = "SELECT m FROM Member m where m.username = :username"
 )
 @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member extends JpaBaseEntity{
+public class Member extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "member_id")
     private Long id;
     private String username;
@@ -41,7 +42,7 @@ public class Member extends JpaBaseEntity{
         this.username = username;
         this.age = age;
 
-        if(team != null) {
+        if (team != null) {
             changeTeam(team);
         }
     }
